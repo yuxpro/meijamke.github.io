@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "《第一行代码》Chapter 1"
+title: "《第一行代码》Chapter 01"
 subtitle: '开始启程'
 author: "Jamke"
 header-style: text
@@ -46,36 +46,34 @@ tags:
 ---
 #### 项目目录结构
 
-文件（夹） | 讲解
----|---
-.gradle和.idea | Android Studio自动生成的文件，无需关心
-app | 项目的代码和资源等内容基本在这个文件夹里
-build | 编译时自动生成的文件
-gradle | 包含了gradle-wrapper配置文件，会自动根据本地缓存的情况决定是否联网下载gradle，在setting里可以指定本地缓存gradle的位置，也可以选择联网下载gradle
-.gitignore | 将指定的目录和文件排除在版本控制之外
-build.gradle | 项目全局的gradle构建脚本，一般不需要修改
-gradle.properties | 项目全局的gradle配置文件
-gradlew和gradlew.bat | 用于在命令行中执行gradle命令，其中gradlew是在Linux或Mac系统使用，gradlew.bat是在Windows系统使用
-.iml | IntelliJ IDEA项目自动生成的文件（Android Studio是基于IntelliJ IDEA开发的），用于标识这是一个IntelliJ IDEA项目
-local.properties | 用于指定Android SDK路径，一般自动生成，若Android SDK路径改变了，在这个文件修改即可
-setting.gradle | 用于指定项目引入的所有模块，一般模块的引入都是自动完成的
+文件（夹）
+- .gradle和.idea：Android Studio自动生成的文件，无需关心
+- app：项目的代码和资源等内容基本在这个文件夹里
+- build：编译时自动生成的文件
+- gradle：包含了gradle-wrapper配置文件，会自动根据本地缓存的情况决定是否联网下载gradle，在setting里可以指定本地缓存gradle的位置，也可以选择联网下载gradle
+- .gitignore：将指定的目录和文件排除在版本控制之外
+- build.gradle：项目全局的gradle构建脚本，一般不需要修改
+- gradle.properties：项目全局的gradle配置文件
+- gradlew和gradlew.bat：用于在命令行中执行gradle命令，其中gradlew是在Linux或Mac系统使用，gradlew.bat是在Windows系统使用
+- .iml：IntelliJ IDEA项目自动生成的文件（Android Studio是基于IntelliJ IDEA开发的），用于标识这是一个IntelliJ IDEA项目
+- local.properties：用于指定Android SDK路径，一般自动生成，若Android SDK路径改变了，在这个文件修改即可
+- setting.gradle：用于指定项目引入的所有模块，一般模块的引入都是自动完成的
 
 ---
 #### app目录结构
 
-文件（夹） | 讲解
----|---
-build | 和外层build目录类似，但是更多更杂，包含了编译时自动生成的文件
-libs | 项目中使用到的第三方jar包都放在该目录下，该目录下的jar包会自动添加到构建路径里
-androidTest | 用于编写Android Test测试用例，对项目进行自动化测试
-java | 放置java代码的目录
-res | 项目中使用到的所有图片、字符串、布局等资源都要放在该目录下，此目录下有很多子目录，如图片放在drawable目录下，字符串放在values目录下，布局放在layouts目录下，应用图标（icon）放在mipmap目录下
-AndroidManifest.xml | 项目的配置文件，四大组件（activity、service、receiver、provider）都需要在这个文件中注册，而且权限声明也是在这个文件中声明
-test | 用于编写Unit Test测试用例，对项目进行自动化测试
-.gitignore | 将指定的目录和文件排除在版本控制之外
-app.iml | IntelliJ IDEA项目自动生成的文件
-build.gradle | app模块的gradle构建脚本
-proguard-rules.pro | 用于指定项目代码的混淆规则，当代码开发完成打成安装包文件，如果不希望代码被破解，就可以在该文件配置从而混淆代码
+文件（夹）
+- build：和外层build目录类似，但是更多更杂，包含了编译时自动生成的文件
+- libs：项目中使用到的第三方jar包都放在该目录下，该目录下的jar包会自动添加到构建路径里
+- androidTest：用于编写Android Test测试用例，对项目进行自动化测试
+- java：放置java代码的目录
+- res：项目中使用到的所有图片、字符串、布局等资源都要放在该目录下，此目录下有很多子目录，如图片放在drawable目录下，字符串放在values目录下，布局放在layouts目录下，应用图标（icon）放在mipmap目录下
+- AndroidManifest.xml-项目的配置文件，四大组件（activity、service、receiver、provider）都需要在这个文件中注册，而且权限声明也是在这个文件中声明
+- test：用于编写Unit Test测试用例，对项目进行自动化测试
+- .gitignore：将指定的目录和文件排除在版本控制之外
+- app.iml：IntelliJ IDEA项目自动生成的文件
+- build.gradle：app模块的gradle构建脚本
+- proguard-rules.pro：用于指定项目代码的混淆规则，当代码开发完成打成安装包文件，如果不希望代码被破解，就可以在该文件配置从而混淆代码
 
 ---
 #### 其他
