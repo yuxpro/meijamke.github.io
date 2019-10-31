@@ -38,18 +38,25 @@ tags:
 ---
 #### 运行时权限
 - Android6.0（API23）之前，APP申请的权限是在安装APP时授予的。
-    1. 用户安装APP时可以看到所有APP需要申请的权限，且在安装后可以在设置->权限管理界面看到APP申请的权限。
-    2. 缺点：用户不授予APP所需的所有权限，则无法安装和使用APP
+
+> 用户安装APP时可以看到所有APP需要申请的权限，且在安装后可以在设置->权限管理界面看到APP申请的权限。
+
+> 缺点：用户不授予APP所需的所有权限，则无法安装和使用APP
 
 - Android6.0（API23）开始，Android将权限分为普通权限和危险权限（还有第三种特殊权限，有需要可以查找文档）。
-    1. APP申请的普通权限不需要用户确认，但APP在运行时申请的危险权限会弹窗提醒用户是否授权
-    2. 同样，可以在设置->权限管理界面查看APP权限，并且可以撤销授权（？待进一步确认）。
+
+> APP申请的普通权限不需要用户确认，但APP在运行时申请的危险权限会弹窗提醒用户是否授权
+
+> 同样，可以在设置->权限管理界面查看APP权限，并且可以撤销授权（？待进一步确认）。
 
 ---
 ##### 危险权限
-- 概念：可能威胁到用户隐私和设备安全的权限
-- 共24个危险权限分为9组，每一组中的任一一个权限被授权，整组的权限相应地也被授权。危险权限组可能发生改变，最新的查看[这里](https://developer.android.google.cn/guide/topics/security/permissions.html?hl=zh_cn#perm-groups)
-- 在Manifest文件中申请权限，无论普通权限还是危险权限都需要申请，申请权限举例如下：
+
+> 概念：可能威胁到用户隐私和设备安全的权限
+
+> 共24个危险权限分为9组，每一组中的任一一个权限被授权，整组的权限相应地也被授权。危险权限组可能发生改变，最新的查看[这里](https://developer.android.google.cn/guide/topics/security/permissions.html?hl=zh_cn#perm-groups)
+
+> 在Manifest文件中申请权限，无论普通权限还是危险权限都需要申请，申请权限举例如下：
 
 ```
 <manifest>
@@ -174,7 +181,9 @@ if(cursor!=null){
 #### 创建内容提供器
 - 创建内容提供器之前，首先需要创建一个数据库，这里使用SQLiteDatabase
 - 创建内容提供器：
+
 > 1. 新建class继承自ContentProvider，重写6个方法：onCreate()、insert()、delet()、update()、query()、getType()。
+
 > 2. 在Manifest文件中注册provider（4大组件都需要注册）
 
 ```
@@ -187,7 +196,9 @@ if(cursor!=null){
 
 ---
 ##### 重写的6个方法具体如下
-- onCreate()：初始化内容提供器，当ContentResolver调用insert、delet、update时会执行这个函数初始化内容提供器。一般在该方法内创建和初始化数据库。
+- onCreate()
+
+> 初始化内容提供器，当ContentResolver调用insert、delet、update时会执行这个函数初始化内容提供器。一般在该方法内创建和初始化数据库。
 
 ```
 @Override
@@ -196,6 +207,7 @@ public boolean onCreate(){
     return true;//true告诉ContentResolver数据库创建成功
 }
 ```
+
 > 在重写下列方法之前，应该创建一个==匹配Uri==的函数，原因是，一个表格中有很多行，我们不可能对每一个行都做一个if/switch-case判断，所以创建的这个函数，可以将单个表格映射到一个整数（一般采用100，200等整数），表格的所有行映射到另一个整数（一般采用101，102，201等整数）。举例如下：
 
 ```
@@ -222,6 +234,7 @@ static{
     //mUriMatcher.addURI(String authority, String path+"/#", int CODE_TABLE2_COLUMN); 
 }
 ```
+
 > 注意：SQLiteDatabase支持两个通配符：#（表示任意整数）和*（表示任意字符串）
 
 > 注意：DATE是列名，假设DATE设为主键，即key primary，且若DATE数据类型是整数，那么具体的path参数应该是path+"/#"；若DATE数据类型是字符串，那么具体的path参数应该是path+"/*"。
@@ -240,7 +253,7 @@ public Uri insert(Uri uri, ContentValues value){
         //由于插入数据时，一般直接插入表格中，所以不考虑插入已有的行，当然也可以实现插入已有行，相当于更新
         case CODE_TABLE1:
             long id = db.insert(
-            uri,
+            TABLE_NAME,//本质上是uri的path，可以通过uri.getPathSegment().get(0)获得
             null,//当某些列没有指定值时，指定插入null
             value);
             uriInserted = uri.buildUpon().appendPath(String.valueOf(id)).build();
@@ -266,13 +279,13 @@ public int delet(Uri uri, String selection, String[] selectionArgs){
     switch(mUriMatcher.match(uri)){
         case CODE_TABLE1:
             rowsDeleted = db.delet(
-            uri,
+            TABLE_NAME,//本质上是uri的path，可以通过uri.getPathSegment().get(0)获得
             selection,
             selectionArgs);
             break;
         case CODE_TABLE1_COLUMN:
             rowsDeleted = db.delet(
-            uri,
+            TABLE_NAME,//本质上是uri的path，可以通过uri.getPathSegment().get(0)获得
             "DATE = ?",//DATE是列名，假设DATE设为主键，即key primary
             new String[]{uri.getPathSegment().get(1))};//Uri的getPathSegment()方法会将path以"/"分割path
             break;
@@ -297,14 +310,14 @@ public int update(Uri uri, ContentValues value, String selection, String[] selec
     switch(mUriMatcher.match(uri)){
         case CODE_TABLE1:
             rowsUpdated = db.update(
-            uri,
+            TABLE_NAME,//本质上是uri的path，可以通过uri.getPathSegment().get(0)获得
             value,
             selection,
             selectionArgs);
             break
         case CODE_TABLE1_COLUMN:
             rowsUpdated = db.update(
-            uri,
+            TABLE_NAME,//本质上是uri的path，可以通过uri.getPathSegment().get(0)获得
             value,
             "DATE = ?",//DATE是列名，假设DATE设为主键，即key primary
             new String[]{uri.getPathSegment().get(1))};//Uri的getPathSegment()方法会将path以"/"分割path
@@ -330,7 +343,7 @@ public Cursor query(Uri uri, String[] projection, String selection, String[] sel
     switch(mUriMatcher.match(uri)){
         case CODE_TABLE1:
             cursor = db.query(
-            uri,
+            TABLE_NAME,//本质上是uri的path，可以通过uri.getPathSegment().get(0)获得
             projection,
             selection,
             selectionArgs,
@@ -338,7 +351,7 @@ public Cursor query(Uri uri, String[] projection, String selection, String[] sel
             break
         case CODE_TABLE1_COLUMN:
             cursor = db.query(
-            uri,
+            TABLE_NAME,//本质上是uri的path，可以通过uri.getPathSegment().get(0)获得
             projection,
             "DATE = ?",//DATE是列名，假设DATE设为主键，即key primary
             new String[]{uri.getPathSegment().get(1)},//Uri的getPathSegment()方法会将path以"/"分割path
@@ -396,20 +409,29 @@ ContentResolver->>APP: results
 ---
 #### git学习
 - 忽略文件
+
 > .gitignore文件内编辑
 
 - 查看文件修改内容
+
 > git status //查看文件修改内容
+
 > git diff //查看文件与修改前的不同
+
 > git diff xxx //xxx是文件所在的具体路径，用于查看指定的文件与修改前的不同
 
 - 撤销修改后未commit的修改
+
 > git checkout xxx //xxx是文件所在的具体路径
 
 - 撤销修改后commit的修改
+
 > git reset HEAD xxx //xxx是文件所在的具体路径
+
 > git checkout xxx //xxx是文件所在的具体路径
 
 - 查看提交记录
+
 > git log
+
 > git log xxx //xxx是文件所在的具体路径
