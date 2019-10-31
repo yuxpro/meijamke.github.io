@@ -1,4 +1,4 @@
-    ---
+---
 layout: post
 title: "《第一行代码》Chapter 07"
 subtitle: '内容提供器'
