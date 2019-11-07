@@ -446,9 +446,9 @@ startService(intent);
 > 1. 继承Binder类
 >> ==服务仅供自己应用使用，且无需跨进程工作（与客户端处于同一应用和进程内）==，如：那么可以选择继承Binder类创建IBinder。客户端可通过Binder直接访问Binder内的方法和Service中可用的公共方法。如：需要将活动绑定到在后台播放音乐的服务的APP。
 > 2. 使用Messenger
->> ==服务需要跨进程==使用，那么可以使用Messenger创建IBinder，Messenger是执行进程间通信（IPC）最简单的方法，这是因为Messenger会在单个线程中创建包含所有绑定请求的队列，这样服务就一次接收一个请求，而AIDL接口会同时向服务发送多个请求，服务随后必须执行多线程处理。而且使用Messenger你不需要对服务进行线程安全设计。 
-> 3. 使用AIDL
->> AIDL可让服务==同时处理多个请求==，但大多数应用==不应该使用AIDL==创建绑定服务，因为AIDL需要多线程处理能力，这可能导致更为复杂的实现，同时AIDL需要保证达到线程安全的要求。
+>> ==服务需要跨进程==使用，那么可以使用Messenger创建IBinder。Messenger实际上是以AIDL为底层结构，是执行进程间通信（IPC）最简单的方法，这是因为Messenger会在单个线程中创建包含所有绑定请求的队列，这样服务就一次接收一个请求；而AIDL接口会同时向服务发送多个请求，服务随后必须执行多线程处理。而且使用Messenger你不需要对服务进行线程安全设计。 
+> 3. 使用AIDL(Android Interface Definition Language)
+>> AIDL，AIDL将对象分解成操作系统可以识别的原语（primitives），然后操作系统可以跨进程将它们组合起来从而实现跨进程通信（IPC）。AIDL可让服务==同时处理多个请求==，但大多数应用==不应该使用AIDL==创建绑定服务，因为AIDL需要多线程处理能力，这可能导致更为复杂的实现，同时AIDL需要保证达到线程安全的要求。
 
 - 如果确实需要直接使用AIDL，参阅[这里](https://developer.android.google.cn/guide/components/aidl.html)
 
