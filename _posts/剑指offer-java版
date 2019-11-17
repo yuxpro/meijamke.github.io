@@ -1,0 +1,771 @@
+---
+layout: post
+title: "如何读代码"
+subtitle: '读代码'
+author: "Jamke"
+header-style: text
+tags:
+  - Code Practice
+  - Online Coding
+  - NowCoder
+---
+
+
+### 剑指offer-java版
+
+#### 7.斐波那契数列
+
+大家都知道斐波那契数列，现在要求输入一个整数n，请你输出斐波那契数列的第n项（从0开始，第0项为0）。
+n<=39 
+
+```
+public class Solution {
+    public int Fibonacci(int n) {  
+        if(n==0||n==1)
+            return n;
+        return Fibonacci(n-1)+Fibonacci(n-2);
+    }
+    /*非递归
+    public int Fibonacci(int n) {
+        int a=0;
+        int b=1;
+        while(n>0){
+            b=a+b;
+            a=b-a;
+            n--;
+        }
+        return a;
+    }*/
+}
+```
+
+
+#### 8.跳台阶
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级。求该青蛙跳上一个n级的台阶总共有多少种跳法（先后次序不同算不同的结果）。
+
+```
+public class Solution {
+    public int JumpFloor(int n) {
+        int res=0;
+        if(n==1||n==2)
+            return n;
+        if(n>2)
+            res = JumpFloor(n-1)+JumpFloor(n-2);
+        return res;
+    }
+    /*非递归方法
+    public int JumpFloor(int n) {
+        int a=0,b=1;
+        while(n>0){
+            b=a+b;
+            a=b-a;
+            n--;
+        }
+        return b;
+    }*/
+}
+```
+
+#### 9.变态跳台阶
+
+一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。
+
+```
+public class Solution {
+    public int JumpFloorII(int n) {
+        int res=1;
+        if(n==0||n==1)
+            return n;
+        while(n>1){
+            res+=JumpFloorII(n-1)+JumpFloorII(n-2);
+            n-=2;
+        }
+        return res;
+    }
+    /*非递归方法
+    public int JumpFloorII(int n) {
+        if(n==0)
+            return n;
+        return (int)Math.pow(2,n-1);
+    }*/
+}
+```
+
+#### 10.矩形覆盖
+
+我们可以用++2*1++的小矩形横着或者竖着去覆盖更大的矩形。请问用n个++2*1++的小矩形无重叠地覆盖一个++2*n++的大矩形，总共有多少种方法？
+
+```
+public class Solution {
+    public int RectCover(int n) {
+        int res=0;
+        if(n==1||n==2)
+            return n;
+        if(n>2)
+            res=RectCover(n-1)+RectCover(n-2);
+        return res;
+    }
+    /*非递归方法
+    public int RectCover(int n) {
+        int a=1,b=2,res=0;
+        if(n==1)
+            res=1;
+        while(n>1){
+            b=a+b;
+            a=b-a;
+            res=a;
+            n--;
+        }
+        return res;
+    }*/
+}
+```
+
+
+#### 11.二进制中1的个数
+
+输入一个整数，输出该数二进制表示中1的个数。其中负数用补码表示。
+
+思路：n&(n-1)就可以消去最右边的1，不断循环，可以统计1的个数
+
+注意：java和c++中，默认是补码形式。
+
+对于负数，负数符号位为1：>>>按位右移补零操作符，符号位跟着移动，移动得到的空位以零填充。>>按位右移补符号位，右移时符号位不动，一直在最高位。如：
+
+```
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(Integer.toBinaryString(-61));
+        System.out.println(Integer.toBinaryString((-61)>>>1));
+        System.out.println(Integer.toBinaryString((-61)>>1));
+    }
+}
+```
+输出结果为（实际输出，最高位0不显示）：
+
+11111111111111111111111111000011
+01111111111111111111111111100001
+11111111111111111111111111100001
+
+注意：对于[位移操作](https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.19)，当左操作数是int，那么右操作数只有5个bit，即位移的距离是**0到31**；当左操作数是int，那么右操作数是6个bit，即位移的距离是**0到63**
+
+```
+public class Solution {
+    public int NumberOf1(int n) {
+        int res=0;
+        while(n!=0){
+            n=n&(n-1);
+            res+=1;
+        }
+        return res;
+    }
+}
+```
+
+#### 12.数值的整数次方
+
+给定一个double类型的浮点数base和int类型的整数exponent。求base的exponent次方。 
+
+思路：快速求幂（https://blog.csdn.net/hkdgjqr/article/details/5381028）
+
+知识点：n & 1 等价于 n % 2，n >>= 1 等价于 n /= 2
+
+```
+public class Solution {
+    public double Power(double b, int e) {
+        double res=1;
+        boolean neg=false;
+        if(b==0)
+            return 0;
+        if(e<0){
+            e=-e;
+            neg=true;
+        }
+        while(e!=0){
+            if((e&1)==1)
+                res*=b;
+            e>>=1;
+            b*=b;
+        }
+        return neg ? 1/res : res;
+  }
+}
+```
+
+
+#### 13.调整数组顺序使奇数位于偶数前面（不能新建数组，直接修改原数组）
+
+输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有的奇数位于数组的前半部分，所有的偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
+
+```
+public class Solution {
+    public void reOrderArray(int [] arr) {
+        int l=arr.length;
+        int p=0;
+        for(int i=0;i<l;i++){
+            if((arr[i]%2)==1){
+                int q=i;
+                int temp=arr[i];
+                while(q>p){
+                    arr[q]=arr[q-1];
+                    q--;
+                }
+                arr[q]=temp;
+                p++;
+            }
+        }
+    }
+}
+```
+
+#### 14.链表中倒数第K个结点
+
+输入一个链表，输出该链表中倒数第k个结点。
+
+注意：java中，不使用传入的链表结点，而是将链表结点单独赋给一个局部变量，当局部变量next之后得不到下一个结点（为什么呢？）
+
+```
+/*
+public class ListNode {
+    int val;
+    ListNode next = null;
+
+    ListNode(int val) {
+        this.val = val;
+    }
+}*/
+public class Solution {
+    public ListNode FindKthToTail(ListNode head,int k) {
+        ListNode p,q;
+        q=p=head;
+        int i=0;
+        for(;q!=null;i++){
+            q=q.next;
+            if(i>=k)
+                p=p.next;
+        }
+        if(k<1 || k>i)	return null;
+        return p;
+    }
+}
+```
+
+
+#### 15.反转链表
+
+输入一个链表，反转链表后，输出新链表的表头。
+
+注意：需要用传入的链表表头来转移数据，否则不通过（为什么呢？）
+
+```
+/*
+public class ListNode {
+    int val;
+    ListNode next = null;
+
+    ListNode(int val) {
+        this.val = val;
+    }
+}*/
+public class Solution {
+    public ListNode ReverseList(ListNode head) {
+        ListNode p,q=null;
+        while(head!=null){
+            p=head.next;
+            head.next=q;
+            q=head;
+            head=p;
+        }
+        return q;
+    }
+}
+```
+
+#### 16.合并两个排序的链表
+
+输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
+
+注意：需要用传入的链表表头来转移数据，否则不通过（为什么呢？）
+```
+/*
+public class ListNode {
+    int val;
+    ListNode next = null;
+
+    ListNode(int val) {
+        this.val = val;
+    }
+}*/
+public class Solution {
+    public ListNode Merge(ListNode list1,ListNode list2) {
+        ListNode m=new ListNode(-1);
+        ListNode n=m;
+        while(list1!=null && list2!=null){
+            if(list1.val<=list2.val){
+                n.next=list1;
+                list1=list1.next;
+            }else{
+                n.next=list2;
+                list2=list2.next;
+            }
+            n=n.next;
+        }
+        if(list1!=null) n.next=list1;
+        if(list2!=null) n.next=list2;
+        return m.next;
+    }
+}
+```
+
+#### 17.树的子结构
+
+输入两棵二叉树A，B，判断B是不是A的子结构。（ps：我们约定空树不是任意一个树的子结构）
+
+思路：
+1. 判断两个树的根结点是否相同
+2. 若不相同，判断A的左孩子或右孩子根结点与B的根结点是否相同。直到A或B为null时都没有相同的，说明不包含
+3. 若A中有值与B根结点相同，则判断A中是否有左孩子或右孩子与B的结构相同
+a. 若B先为null，说明包含
+b. 若A先为null，说明不包含
+
+```
+/**
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    //负责判断根结点的值是否相等
+    public boolean HasSubtree(TreeNode a,TreeNode b) {
+        boolean res=false;
+        if(a!=null && b!=null){
+            if(a.val==b.val) res=aHasb(a,b);
+            if(!res) res=HasSubtree(a.left,b) || HasSubtree(a.right,b);
+        }
+        return res;
+    }
+    //负责判断左右子树各结点的值是否相等
+    public boolean aHasb(TreeNode a,TreeNode b){
+        if(b==null) return true;
+        if(a==null || a.val!=b.val) return false;
+        return aHasb(a.left,b.left) && aHasb(a.right,b.right);
+    }
+}
+```
+或者：
+```
+/**
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    public boolean HasSubtree(TreeNode a,TreeNode b) {
+        if(a==null || b==null) return false;
+        return aHasb(a,b) ||
+               HasSubtree(a.left,b) ||
+               HasSubtree(a.right,b);
+    }
+    //负责判断各结点的值是否相等
+    public boolean aHasb(TreeNode a,TreeNode b){
+        if(b==null) return true;
+        if(a==null || a.val!=b.val) return false;
+        return aHasb(a.left,b.left) && aHasb(a.right,b.right);
+    }
+}
+```
+
+
+以下代码是判断B是否是A的子树
+```
+/**
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    public boolean HasSubtree(TreeNode a,TreeNode b) {
+        if(a==null || b==null) return false;
+        return aHasb(a,b) ||
+               aHasb(a.left,b) ||
+               aHasb(a.right,b);
+    }
+    //负责判断各结点的值是否相等
+    public boolean aHasb(TreeNode a,TreeNode b){
+        if(b==null) return true;
+        if(a==null || a.val!=b.val) return false;
+        return aHasb(a.left,b.left) && aHasb(a.right,b.right);
+    }
+}
+```
+
+
+#### 18.二叉树的镜像
+
+操作给定的二叉树，将其变换为源二叉树的镜像。
+
+思路：递归，深度优先先序遍历
+
+```
+/**
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    public void Mirror(TreeNode node) {
+        if(node!=null){
+            TreeNode temp=node.left;
+            node.left=node.right;
+            node.right=temp;
+            Mirror(node.left);
+            Mirror(node.right);
+        }
+    }
+}
+```
+
+#### 19.顺时针打印矩阵
+
+输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字，例如，如果输入如下4 X 4矩阵： 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 则依次打印出数字1,2,3,4,8,12,16,15,14,13,9,5,6,7,11,10.
+
+思路：定下左上和右下四个值，记录当前未打印的范围，然后不断循环操作一圈，每循环一圈，未打印范围就缩小一圈，直到结束为止。
+
+```
+import java.util.ArrayList;
+public class Solution {
+    public ArrayList<Integer> printMatrix(int [][] matrix) {
+        if(matrix==null) return null;
+        ArrayList<Integer> res=new ArrayList<Integer>();
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int left=0, top=0, right=col-1, bottom=row-1;
+        while(left<=right && top<=bottom){
+            for(int i=left;i<=right;i++) 
+                res.add(matrix[top][i]);
+            top++;
+            if(top>bottom) break;
+            for(int i=top;i<=bottom;i++) 
+                res.add(matrix[i][right]);
+            right--;
+            if(left>right) break;
+            for(int i=right;i>=left;i--) 
+                res.add(matrix[bottom][i]);
+            bottom--;
+            if(top>bottom) break;
+            for(int i=bottom;i>=top;i--)
+                res.add(matrix[i][left]);
+            left++;
+            if(left>right) break;
+        }
+        return res;
+    }
+}
+```
+
+
+#### 20.包含min函数的栈
+
+定义栈的数据结构，请在该类型中实现一个能够得到栈中所含最小元素的min函数（时间复杂度应为O（1））。
+
+知识点：（https://www.runoob.com/java/java-stack-class.html）
+1. java中，初始化一个栈：
+Stack<xxx>  stack=new Stack<xxx>();//xxx是数据类型
+2. 栈的方法有：
+
+> size()：返回栈数据量
+
+> empty()：判断栈是否为空
+
+> push(xxx)：入栈
+
+> peek()：返回栈顶元素，不会删除栈顶元素
+
+> pop()：出栈
+
+> search(xxx)：返回xxx在栈中的位置，位置基数是1
+
+思路：
+1. min初始值为无穷大。
+2. 入栈：
+当栈为空，入栈新数据，记录当前min为新数据；当栈不为空，入栈的新数据小于min，先把min入栈，记录当前min为新数据，再入栈新数据。
+3. 出栈：
+当栈为空，出栈操作直接return；当栈不为空，若栈顶与min相等且栈内数据量大于1，则先出栈，记录当前min为栈顶元素，然后再出栈，若栈顶与min相等且栈内数据量为1，min记录为无穷大，然后出栈。
+
+
+```
+import java.util.Stack;
+
+public class Solution {
+
+    private static Stack<Integer> stack=new Stack<Integer>();
+    private int min=Integer.MAX_VALUE;
+    public void push(int data) {
+        if(stack.empty())
+            min=data;
+        else if(data<min){
+            stack.push(min);
+            min=data;
+        }
+        stack.push(data);
+    }
+    
+    public void pop() {
+        if(stack.empty()) return;
+        if(min==top()){
+            if(stack.size()>1){
+                stack.pop();
+                min=top();
+            }
+            else
+                min=Integer.MAX_VALUE;
+        }
+        stack.pop();
+    }
+    
+    public int top() {
+        return stack.peek();
+    }
+    
+    public int min() {
+        return min;
+    }
+}
+```
+
+#### 21.栈的压入、弹出序列
+
+输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否可能为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列1,2,3,4,5是某栈的压入顺序，序列4,5,3,2,1是该压栈序列对应的一个弹出序列，但4,3,5,1,2就不可能是该压栈序列的弹出序列。（注意：这两个序列的长度是相等的）
+
+思路：
+1. 入栈序列的一个元素入栈，然后判断出栈序列是否与栈顶元素相等，若相等，出栈，并继续判断出栈序列的下一个元素是否与栈顶元素相等。
+2. 重复1，直到入栈序列全部元素入栈完毕
+3. 若栈为空，说明出栈序列是入栈序列的弹出顺序。若栈不为空，出栈序列不是入栈序列的弹出顺序。
+
+自己的做法（乱）
+
+```
+import java.util.ArrayList;
+import java.util.Stack;
+
+public class Solution {
+    public boolean IsPopOrder(int [] pushA,int [] popA) {
+        Stack<Integer> stack = new Stack<Integer>();
+        int len=pushA.length;
+        int i=0;
+        int j=0;
+        for(;i<len;i++){
+            if(pushA[i]!=popA[j]){
+                if(!stack.empty() && stack.peek()==popA[j]){
+                    stack.pop();
+                    j++;
+                }
+                stack.push(pushA[i]);
+            }
+            else
+                j++;
+        }
+        while(j<len){
+            if(stack.peek()==popA[j]){
+                stack.pop();
+                j++;
+            }
+            else{
+                if(i==len)
+                    return false;
+                stack.push(pushA[i]);
+            }
+        }
+        return true;
+    }
+}
+```
+
+优秀的做法：
+
+```
+import java.util.ArrayList;
+import java.util.Stack;
+
+public class Solution {
+    public boolean IsPopOrder(int [] pushA,int [] popA) {
+        Stack<Integer> stack = new Stack<Integer>();
+        int len=pushA.length;
+        for(int i=0,j=0;i<len;i++){
+            stack.push(pushA[i]);
+            while(j<len && !stack.empty() && stack.peek()==popA[j]){
+                stack.pop();
+                j++;
+            }
+        }
+        return stack.empty();
+    }
+}
+```
+
+#### 22.从上往下打印二叉树
+
+从上往下打印出二叉树的每个节点，同层节点从左至右打印。
+
+知识点：（https://www.runoob.com/java/data-queue.html）
+
+LinkedList类实现了Queue接口，因此我们可以把LinkedList当成Queue来用。
+1. 不会抛出异常：offer（队尾插入元素）、poll（返回队头元素，并删除队头元素）、peek（返回队头元素，不会删除队头元素）
+2. 会抛出异常（不推荐使用）：add（队尾插入元素）、remove（返回队头元素，并删除队头元素）、element（返回队头元素，不会删除队头元素）
+
+思路：
+用队列处理
+1. 入队一个结点，出队一个结点，接着把该结点的左结点入队，然后把该结点的右结点入队。
+2. 重复1，直到队列为空（此时，处理完所有结点）
+
+```
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+/**
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    public ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
+        ArrayList<Integer> res=new ArrayList<Integer>();
+        Queue<TreeNode> queue=new LinkedList<TreeNode>();
+        queue.offer(root);
+        while(queue.peek() != null){
+            TreeNode temp=queue.poll();
+            res.add(temp.val);
+            if(temp.left != null) queue.offer(temp.left);
+            if(temp.right != null) queue.offer(temp.right);
+        }
+        return res;
+    }
+}
+```
+
+
+#### 23.二叉树的后序遍历
+
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
+
+扩展：
+二叉树的中序遍历、二叉树的前序遍历
+
+思路：
+
+递归
+1. 找到根结点，然后找到左子树根结点和右子树根结点
+2. 重复1，直到判断出来为止
+
+非递归：利用中序入栈，出栈为后序的特点，当输入中序时，判断某一数组是否为后序
+递归：
+
+```
+import java.util.Arrays;
+import java.util.Stack;
+public class Solution {
+    public boolean VerifySquenceOfBST(int [] seq) {
+        if(seq.length==0) return false;
+        return isPostSeq(seq, 0, seq.length-1);
+    }
+    
+    public boolean isPostSeq(int[] a,int start, int end){
+        if(start>=end) return true;
+        int i=end;
+        while(i>start && a[i-1]>a[end]) i--;
+        for(int j=start;j<i;j++)
+            if(a[j]>a[end]) return false;
+        return isPostSeq(a,start,i-1) && isPostSeq(a,i,end-1);
+    }
+    
+}
+```
+或者
+```
+import java.util.Arrays;
+import java.util.Stack;
+public class Solution {
+    public boolean VerifySquenceOfBST(int [] seq) {
+        if(seq.length==0) return false;
+        return isPostSeq(seq, 0, seq.length-1);
+    }
+    
+    public boolean isPostSeq(int[] a,int start, int end){
+        if(start>=end) return true;
+        int i=start;
+        while(a[i]<a[end]) i++;
+        for(int j=i;j<end;j++)
+            if(a[j]<a[end]) return false;
+        return isPostSeq(a,start,i-1) && isPostSeq(a,i,end-1);
+    }
+    
+}
+```
+
+非递归：
+
+```
+import java.util.Arrays;
+import java.util.Stack;
+public class Solution {
+    public boolean VerifySquenceOfBST(int [] seq) {
+        int[] arr= seq.clone();
+        Arrays.sort(arr);
+        return isPostSeq(arr,seq);
+    }
+    public boolean isPostSeq(int[] midSeq,int[] seq){
+        if(midSeq.length==0 || seq.length==0) return false;
+        Stack<Integer> s = new Stack<Integer>();
+        int len=midSeq.length;
+        for(int i=0,j=0;i<len;i++){
+            s.push(midSeq[i]);
+            while(j<len && !s.empty() && seq[j]==s.peek() ){
+                s.pop();
+                j++;
+            }
+        }
+        return s.empty();
+    }
+}
+```
