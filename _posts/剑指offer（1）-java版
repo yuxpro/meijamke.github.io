@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "如何读代码"
-subtitle: '读代码'
+title: "剑指offer（1）-java版"
+subtitle: '编程训练'
 author: "Jamke"
 header-style: text
 tags:
@@ -235,7 +235,7 @@ public class Solution {
 
 输入一个链表，输出该链表中倒数第k个结点。
 
-注意：java中，不使用传入的链表结点，而是将链表结点单独赋给一个局部变量，当局部变量next之后得不到下一个结点（为什么呢？）
+注意：java中，不使用传入的链表结点，而是将链表结点单独赋给一个局部变量，当局部变量next之后得不到下一个结点（为什么呢？牛客网的原因）
 
 ```
 /*
@@ -268,7 +268,7 @@ public class Solution {
 
 输入一个链表，反转链表后，输出新链表的表头。
 
-注意：需要用传入的链表表头来转移数据，否则不通过（为什么呢？）
+注意：需要用传入的链表表头来转移数据，否则不通过（为什么呢？牛客网的原因）
 
 ```
 /*
@@ -298,7 +298,7 @@ public class Solution {
 
 输入两个单调递增的链表，输出两个链表合成后的链表，当然我们需要合成后的链表满足单调不减规则。
 
-注意：需要用传入的链表表头来转移数据，否则不通过（为什么呢？）
+注意：需要用传入的链表表头来转移数据，否则不通过（为什么呢？牛客网原因）
 ```
 /*
 public class ListNode {
@@ -310,7 +310,7 @@ public class ListNode {
     }
 }*/
 public class Solution {
-    public ListNode Merge(ListNode list1,ListNode list2) {
+#     public ListNode Merge(ListNode list1,ListNode list2) {
         ListNode m=new ListNode(-1);
         ListNode n=m;
         while(list1!=null && list2!=null){
@@ -794,7 +794,7 @@ public class Solution {
 
 思路：本质深度优先先序遍历
 
-知识点：a=ArrayList<ArrayList<xxx>>，调用add方法时，直接传入b=ArrayList<xxx>本质传入的是对象的引用地址，这样a和b共享同一个对象，会造成不可预料的影响，建议这样写a.add(new ArrayList<xxx>(b));
+知识点：a=ArrayList<ArrayList<xxx>>，b=ArrayList<xxx>，调用add(b)时，本质传入的是对象的引用地址，这样a就指向了b，最终a的所有元素都指向b，即a的所有元素都是同一个。建议这样写a.add(new ArrayList<xxx>(b));
 
 递归
 ```
@@ -830,3 +830,6 @@ public class Solution {
     }
 }
 ```
+
+若要求返回的的ArrayList中，数组长度大的数组靠前
+可以考虑使用java中的Collections的sort方法
