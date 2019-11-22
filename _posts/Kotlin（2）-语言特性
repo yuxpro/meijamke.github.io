@@ -1,0 +1,341 @@
+---
+layout: post
+title: "Kotlin（2）-语言特性"
+subtitle: '语言特性'
+author: "Jamke"
+header-style: text
+tags:
+  - Kotlin
+  - Idioms
+  - 语言特性
+---
+
+## 目录
+1. [data class](#data-class)
+2. [函数的默认形参](#函数的默认形参)
+3. [过滤一个列表](#过滤一个列表)
+4. [检查元素是否在集合中](#检查元素是否在集合中)
+5. [字符串内插](#字符串内插)
+6. [实例检查](#实例检查)
+7. [遍历map的键值对](#遍历map的键值对)
+8. [访问map](#访问map)
+9. [范围的使用](#范围的使用)
+10. [只读](#只读)
+11. [惰性属性](#惰性属性)
+12. [继承性函数](#继承性函数)
+13. [创建单例](#创建单例)
+14. [如果不为null的简写表达式](#如果不为null的简写表达式)
+15. [如果为null和不为null的简写表达式](#如果为null和不为null的简写表达式)
+16. [可为null的map不为null和为null时的简写表达式](#可为null的map不为null和为null时的简写表达式)
+17. [获取可为空的集合的第一个元素](#获取可为空的集合的第一个元素)
+18. [表达式](#表达式)
+- [直接返回when表达式](#直接返回when表达式)
+- [if表达式](#if表达式)
+- [try/catch表达式](#trycatch表达式)
+19. [建造者方法的用法](#建造者方法的用法)
+20. [单行表达式的函数的简写](#单行表达式的函数的简写)
+21. [一个对象实例调用多个方法](#一个对象实例调用多个方法)
+22. [配置一个对象的属性](#配置一个对象的属性)
+23. [访问本地资源](#访问本地资源)
+24. [需要泛型信息的泛型函数的简写](#需要泛型信息的泛型函数的简写)
+25. [可为null的Boolean为null和不为null的处理](#可为null的boolean为null和不为null的处理)
+26. [两个变量交换值](#两个变量交换值)
+27. [标记代码未完成](#标记代码未完成)
+
+## 正文
+
+### Idioms
+Idioms，意思是Kotlin常用的语言特性。
+
+##### 更多关于[Idioms](https://kotlinlang.org/docs/reference/idioms.html)
+
+#### data class
+- 更多关于[data class](https://kotlinlang.org/docs/reference/data-classes.html)
+
+创建DTO(POJOs/POCOs)
+
+```kotlin
+data class Customer(val name:String,val email:String)
+```
+
+
+给类添加data修饰符，类就拥有了下列的函数属性：
+- 类全部属性的`setter`和`getter`
+- `equals()`
+- `hashCode()`
+- `toString()`
+- `copy()`
+- 类全部属性的`component1()`, `component2()`,...
+
+#### 函数的默认形参
+
+```kotlin
+fun foo(a:String="hello",b:String="world"){...}
+```
+
+
+#### 过滤一个列表
+
+```kotlin
+var positivies=list.filter{x->x>0}
+```
+或者
+```kotlin
+var positivies=list.filter{it>0}其中it指代list
+```
+
+#### 检查元素是否在集合中
+
+```kotlin
+if("hello" in listOf("hello","world")){...}
+
+if("hello" !in listOf("hello","world")){...}
+```
+
+#### 字符串内插
+
+```kotlin
+var name = "jamke"
+println("name is $name")
+```
+
+#### 实例检查
+使用`is`关键字
+
+```kotlin
+when(x){
+    is Foo -> ...
+    is Bar -> ...
+    else -> ...
+}
+```
+
+#### 遍历map的键值对
+`map`类似Python中的字典`dict`
+```kotlin
+for((k,v) in map)
+    println("$k -> $v")
+```
+
+#### 访问map
+
+```
+println(map["key"])
+map["key"]=value
+```
+
+#### 范围的使用
+关键字包括：`in`、`..`、`until`、`downTo`、`step`
+```kotlin
+for(i in 1..100){...}
+for(i in 1 until 100){...}
+for(i in 1..100 step 2){...}
+for(i in 100 downTo 1){...}
+if(x in 1..100){...}
+```
+
+#### 只读
+关键字`val`修饰的变量只能赋值一次
+
+```kotlin
+val list=listOf("a","b","c")
+val map=mapOf("a" to "1","b" to "2","c" to "3")
+```
+
+#### 惰性属性
+类型Python的迭代器，用到一个生成一个
+
+```kotlin
+val p:String by lazy{
+    //计算string
+}
+```
+
+#### 继承性函数
+
+```kotlin
+//定义继承性函数
+fun String.spaceToCamelCase(){...}
+//调用继承性函数
+"hello world".spaceToCamelCase()
+```
+
+#### 创建单例
+使用关键字`val`，因为`val`只能赋值一次
+```kotlin
+object Resource{
+    val name="jamke"
+}
+```
+
+#### 如果不为null的简写表达式
+注意第二行代码
+```kotlin
+val files=File("test").listFiles()
+println(files?.size)
+
+val value=...
+value?.let{
+    //如果不为null时执行的代码块
+}
+```
+
+#### 如果为null和不为null的简写表达式
+注意第二行代码，不为`null`则输出文件大小，为`null`，则输出empty字符串
+```kotlin
+val files=File("test").listFiles()
+println(files?.size ?:"empty")
+```
+
+#### 可为null的map不为null和为null时的简写表达式
+两种写法，注意第一种写法的第二行代码，为`null`时抛出异常
+```kotlin
+val values=mapOf(...)
+val email=values["values"] ?: throw IllegalStateException("Email is missing!")
+
+val values=mapOf(...)
+val mapped=values?.let{ 
+    transfromValue(it)
+} ?: defaultValue
+```
+
+#### 获取可为空的集合的第一个元素
+
+```kotlin
+val emails=listOf(...)
+val myEmail=emails.firstOrNull() ?: ""
+```
+
+### 表达式
+表达式本身会返回结果
+
+#### 直接返回when表达式
+`when`表达式的简写
+```kotlin
+fun transform(color:String):Int{
+    return when(color){
+        "red"->0
+        "green"->1
+        "blue"->2
+        else->throw IllegalArgumentException("Invalid color param value")
+    }
+}
+```
+
+#### if表达式
+
+```kotlin
+fun foo(param:Int){
+    val result=if(param==1){
+        "one"
+    }else if(param==2){
+        "two"
+    }else{
+        "three"
+    }
+}
+```
+
+#### try/catch表达式
+
+```kotlin
+fun test(){
+    val result=try{
+        count()
+    }catch(e:ArithmeticException){
+        throw IllegalStateException(e);
+    }
+}
+```
+
+#### 建造者方法的用法
+
+```kotlin
+fun arrayOfMinusOnes(size:Int):IntArray{
+    return IntArray(size).apply{fill(-1)}
+}
+```
+
+#### 单行表达式的函数的简写
+
+```kotlin
+fun theAnswer()=42
+```
+
+#### 一个对象实例调用多个方法
+使用关键字`with`
+```kotlin
+class Turtle{
+    fun penDown()
+    fun penUp()
+    fun turn(degree:Double)
+    fun forward(pixels:Double)
+}
+
+val myTurtle=Turtle()
+//画一个100像素的方形
+with(myTurtle){
+    penDown()
+    for(i in 1..4){
+        forward(100.0)
+        turn(90.0)
+    }
+    penUp()
+}
+```
+
+#### 配置一个对象的属性
+当对象的构造函数没有提供相关属性时，使用`apply`配置属性是一个有效的方法。
+```kotlin
+val myRectangle=Rectangle().apply{
+    length=4
+    breadth=7
+    color=0xfafafa
+}
+```
+
+#### 访问本地资源
+
+```kotlin
+val stream=Files.newInputStream(Paths.get("/some/file.txt"))
+stream.buffered().reader().use{
+    reader->println(reader.readText())
+}
+```
+
+#### 需要泛型信息的泛型函数的简写
+关键字`inline`
+```kotlin
+//  public final class Gson {
+//     ...
+//     public <T> T fromJson(JsonElement json, Class<T> classOfT) throws JsonSyntaxException {
+//     ...
+//     }
+
+inline fun <reified T: Any> Gson.fromJson(json: JsonElement):T=this.fromJson(json,T::class.java)
+```
+
+#### 可为null的Boolean为null和不为null的处理
+
+```kotlin
+val b:Boolean?=...
+if(b==true){
+    ...
+}else{
+    //b为false或为null时
+}
+```
+
+#### 两个变量交换值
+关键字`also`
+```kotlin
+var a=1
+var b=2
+a=b.also{b=a}
+```
+
+#### 标记代码未完成
+使用内置函数`TODO()`
+```kotlin
+fun calcTaxes():BigDecimal=TODO("Waiting for feedback from accounting")
+```
