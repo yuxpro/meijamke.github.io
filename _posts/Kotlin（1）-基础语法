@@ -1,0 +1,289 @@
+---
+layout: post
+title: "Kotlin（1）-基础语法"
+subtitle: '基础语法'
+author: "Jamke"
+header-style: text
+tags:
+  - Kotlin
+  - Syntax
+  - 语法
+---
+
+## 目录
+[包声明](#包声明)
+
+[函数](#函数)
+
+[变量](#变量)
+
+[注释](#注释)
+
+[字符串模板](#字符串模板)
+
+[条件表达式](#条件表达式)
+
+[可为null的值和null检查](#可为null的值和null检查)
+
+[类型检查和自动转型](#类型检查和自动转型)
+
+[for循环](#for循环)
+
+[while循环](#while循环)
+
+[when表达式](#when表达式)
+
+[in关键字](#in关键字)
+
+[集合](#集合)
+
+[lambda表达式](#lambda表达式)
+
+[类和对象和实例](#类和对象和实例)
+
+## 正文
+
+##### 笔记摘自[Kotlin reference](https://kotlinlang.org/docs/reference/)
+
+### 基本语法
+#### 包声明
+- 包声明必须在文件的最上面：package xxx
+- 包声明不需要匹配当前文件所在的目录，文件可以放在文件系统的任何地方
+- 可以不写
+
+#### 函数
+更多关于[函数](https://kotlinlang.org/docs/reference/functions.html)
+
+main函数
+- main函数是程序入口点，不需要写返回值
+- Kotlin1.3开始，main函数可以不写形参
+
+println隐式导入
+
+只有一行语句的函数有两种写法
+
+```
+//返回类型显式声明
+fun sum(a:Int,b:Int):Int{
+    return a+b
+}
+//返回类型隐式声明
+fun sum(a:Int,b:Int)=a+b
+```
+
+没有返回值的函数，返回类型忽略不写或者写Unit（个人喜欢忽略不写，写了应该会在编译时）
+
+```
+fun printSum(a:Int,b:Int){
+    println("sum of $a and $b is ${a+b}")
+}
+```
+
+支持默认参数和命名参数
+
+```
+//默认参数
+fun printlnMessageWithDefault(message:String, prefix:String="info"){
+    println("$prefix message")
+}
+//默认参数不赋值
+printlnMessageWithDefault("默认参数不赋值")
+//默认参数赋值
+printlnMessageWithDefault("hello","默认参数赋值")
+
+//命名参数
+printlnMessageWithDefault(prefix="log",message="hello")
+
+//输出结果如下：
+//info 默认参数不赋值
+//默认参数赋值 hello
+//log hello
+```
+
+#### 变量
+更多关于[变量](https://kotlinlang.org/docs/reference/properties.html)
+
+使用关键字val，定义只读的局部变量，只能赋值一次
+
+```
+val a: Int = 1  //声明+赋值
+    val b = 2   // 类型隐式声明，个人喜欢
+    val c: Int  // 声明不赋值，当没有赋值时，需要指明类型
+    c = 3       //赋值
+```
+
+使用关键字var定义的变量，可以反复赋值
+```
+var x=1
+x+=1
+```
+
+
+#### 注释
+更多关于[注释](https://kotlinlang.org/docs/reference/kotlin-doc.html)
+- 单行注释：
+
+```
+//注释的内容
+```
+
+- 多行注释：
+
+```
+/*注释的内容*/
+/*注释内容可以嵌套/*嵌套的注释*/*/
+```
+
+#### 字符串模板
+更多关于[字符串模板](https://kotlinlang.org/docs/reference/basic-types.html#string-templates)
+```
+var a=1
+var s1="a is $a"
+a=2
+var s2="${s1.replace("is","was")}, but now is $a"
+```
+
+
+#### 条件表达式
+更多关于[条件表达式](https://kotlinlang.org/docs/reference/control-flow.html#if-expression)
+
+java的三符号是
+> (a>b) ? a : b
+
+kotlin的三符号是
+> if(a>b) a else b
+
+#### 可为null的值和null检查
+更多关于[null安全](https://kotlinlang.org/docs/reference/null-safety.html/)
+
+当一个引用可能为null时，它必须被显式地标记为可为null，用?标记
+
+函数返回值可为null
+```
+fun parseInt(str:String):Int?{
+    return str.toIntOrNull();
+}
+
+fun parseInt(str:String)=str.toIntOrNull()
+```
+null检查
+> if(a==null)
+
+当给一个不可为null的变量赋予null时，在编译时会出错并告诉你错误原因，而kotlin的?关键字用于声明变量可为null，
+
+#### 类型检查和自动转型
+更多关于[类型转换](https://kotlinlang.org/docs/reference/typecasts.html/)
+
+is操作符（operator）：检查一个表达式是否是一个类型的实例
+
+```
+fun getStringLength(obj:Any):Int?{
+    //当obj is String为true时，判断obj.length是否大于0的时候就会把obj自动转型成String
+    if (obj is String && obj.length>0){
+        return obj.length
+    }
+    return null
+}
+```
+
+#### for循环
+更多关于[for循环](https://kotlinlang.org/docs/reference/control-flow.html#for-loops)
+```
+val items=listOf("apple","banana","kiwifruit")
+for (item in items){
+    println(item)
+}
+for (index in items.indices){
+    println("item at $index is ${items[index]}")
+}
+```
+
+#### while循环
+更多关于[while循环](https://kotlinlang.org/docs/reference/control-flow.html#while-loops)
+```
+val items=listOf("apple","banana","kiwifruit")
+var index=0
+while(index<items.size){
+    println("item at $index is ${items[index]}")
+    index++
+}
+```
+
+#### when表达式
+更多关于[when表达式](https://kotlinlang.org/docs/reference/control-flow.html#when-expression)
+
+类似switch-case，但是可以输入任意类型的数据判断
+
+```
+fun describe(obj:Any):String=
+when(obj){
+    1   ->  "one"
+    "Hello" ->  "Greeting"
+    is Long ->  "Long"
+    !is String  ->  "Not a String"
+    else    ->  "Unknown"
+}
+```
+
+#### in关键字
+更多关于[范围](https://kotlinlang.org/docs/reference/ranges.html)
+
+使用in关键字检查变量是否是某个范围内
+
+```
+val list=listOf("a","b","c")
+if (-1 !in 0..list.lastIndex){
+    println("-1 not in list")
+}
+if(list.size !in list.indices){
+    println("list size is out of list indices range, too")
+}
+
+for(x in 0..4 step 2){
+    print(x)
+}
+//输出结果：024
+
+for(x in 4 downTo 0 step 2){
+    print(x)
+}
+//输出结果：420
+```
+
+#### 集合
+更多关于[集合](https://kotlinlang.org/docs/reference/collections-overview.html)
+
+迭代集合
+```
+val items = listOf("apple", "banana", "kiwifruit")
+for(item in items)
+    println(item)
+```
+检查集合是否包含某个对象
+```
+val items = listOf("apple", "banana", "kiwifruit")
+when{
+    "orange" in items -> println("juicy")
+    "apple" in items -> println("apple is fine too")
+}
+```
+
+
+#### lambda表达式
+
+```
+val fruits=liatOf("banana", "avocado","apple","kiwifruit")
+fruits
+    .filter{it.startsWith("a")}
+    .sortedBy{it}
+    .map{it.toUpperCase()}
+    .forEach{println(it)}
+//输出结果：
+//APPLE
+//AVOCADO
+```
+
+#### 类和对象和实例
+更多关于[类](https://kotlinlang.org/docs/reference/classes.html)
+
+更多关于[对象和实例](https://kotlinlang.org/docs/reference/object-declarations.html)
