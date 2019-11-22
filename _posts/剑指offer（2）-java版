@@ -1,0 +1,182 @@
+---
+layout: post
+title: "剑指offer（2）-java版"
+subtitle: '编程训练'
+author: "Jamke"
+header-style: text
+tags:
+  - Code Practice
+  - Online Coding
+  - NowCoder
+  - 编程训练
+  - 牛客网
+---
+
+## 目录
+1. [分解让复杂问题简单](#分解让复杂问题简单)
+2. [时间效率](#时间效率)
+3. [时间空间效率的平衡](#时间空间效率的平衡)
+4. [知识迁移的能力](#知识迁移的能力)
+
+## 正文
+
+#### 分解让复杂问题简单
+- 复杂链表的复制
+输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
+
+思路1：深度复制，采用三步法
+1. 复制每一个结点，每一个复制结点紧跟在被复制结点后面
+2. 复制结点的random指针指向被复制结点random指针指向结点的下一个结点
+3. 被复制结点处于奇数位置，复制结点处于偶数位置，将复制结点和被复制结点拆出来，复制结点组成一个链表，被复制结点组成一个链表
+```java
+/*
+public class RandomListNode {
+    int label;
+    RandomListNode next = null;
+    RandomListNode random = null;
+
+    RandomListNode(int label) {
+        this.label = label;
+    }
+}
+*/
+public class Solution {
+    public RandomListNode Clone(RandomListNode head){
+        if(head==null) return null;
+        RandomListNode p=head;
+        while(p!=null){
+            RandomListNode temp=new RandomListNode(p.label);
+            temp.next=p.next;
+            p.next=temp;
+            p=temp.next;
+        }
+        p=head;
+        while(p!=null){
+            RandomListNode temp=p.next;
+            if(p.random!=null)
+                temp.random=p.random.next;
+            p=temp.next;
+        }
+        p=head;
+        RandomListNode q=head.next;
+        while(p!=null){
+            RandomListNode temp=p.next;
+            p.next=temp.next;
+            if(temp.next!=null)
+                temp.next=temp.next.next;
+            p=p.next;
+        }
+        return q;
+    }
+}
+```
+思路2：使用map保存原链表和新链表的结点以及next和random结点
+
+使用map的好处是避免重复创建已有结点，直接使用已有结点，有新结点才创建结点。
+
+用到的map方法有：
+get()、put()、containsKey()
+
+```
+import java.util.Map;
+import java.util.HashMap;
+/*
+public class RandomListNode {
+    int label;
+    RandomListNode next = null;
+    RandomListNode random = null;
+
+    RandomListNode(int label) {
+        this.label = label;
+    }
+}
+*/
+public class Solution {
+    public RandomListNode Clone(RandomListNode head){
+        if(head==null) return null;
+        Map<RandomListNode,RandomListNode> map=new HashMap<>();
+        RandomListNode newHead=new RandomListNode(head.label);
+        RandomListNode p=head;
+        RandomListNode q=newHead;
+        map.put(head,newHead);
+        while(p!=null){
+            if(p.next!=null && map.containsKey(p.next)) q.next=map.get(p.next);
+            else if(p.next!=null){
+                RandomListNode temp=new RandomListNode(p.next.label);
+                q.next=temp;
+                map.put(p.next,temp);
+            }
+            if(p.random!=null && map.containsKey(p.random)) q.random=map.get(p.random);
+            else if(p.random!=null){
+                RandomListNode temp=new RandomListNode(p.random.label);
+                q.random=temp;
+                map.put(p.random,temp);
+            }
+            p=p.next;
+            q=q.next;
+        }
+        return newHead;
+    }
+}
+```
+
+- 二叉搜索树与双向链表
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+
+思路：
+1. 二叉搜索树的中序遍历恰好是不递减序列
+2. 中序遍历过程中修改链表的指针，使其指向正确
+```java
+/**
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    TreeNode pre=null;
+    TreeNode listHead=null;
+    public TreeNode Convert(TreeNode root) {
+        if(root==null) return null;
+        Convert(root.left);
+        if(pre==null) listHead=root;
+        root.left=pre;
+        if(pre!=null) pre.right=root;
+        pre=root;
+        Convert(root.right);
+        return listHead;
+    }
+}
+```
+
+- 字符串的排列
+
+#### 时间效率
+- 数组中出现次数超过一半的数字
+- 最小的k个数
+- 连续子数组的最大和
+- 整数中1出现的次数（从1到n整数中1出现的次数）
+- 把数组排成最小的数
+
+#### 时间空间效率的平衡
+- 丑数
+- 第一个只出现一次的字符位置
+- 数组中的逆序对
+- 两个链表的第一个公共结点
+
+#### 知识迁移的能力
+- 数字在排序数组中出现的次数
+- 二叉树的深度
+- 平衡二叉树
+- 数组中只出现一次的数字
+- 和为S的连续正数序列
+- 和为S的两个数字
+- 左旋转字符串
+- 翻转单词顺序列
